@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Excel Report Generator</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="page">
+    <header class="header">
+        <h1>Excel Report Generator</h1>
+        <p>Веб-приложение для анализа Excel-файлов и генерации PDF-отчетов</p>
+    </header>
+
+    <main class="container">
+        <section class="card upload-card">
+            <div class="upload-icon">📊</div>
+
+            <h2>Загрузите Excel-файл</h2>
+            <p>
+                Система автоматически прочитает таблицу, рассчитает основные показатели,
+                построит графики и подготовит PDF-отчет.
+            </p>
+
+            {% if error %}
+            <div class="error">
+                <strong>Ошибка:</strong> {{ error }}
+            </div>
+            {% endif %}
+
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <input class="file-input" type="file" name="file" accept=".xlsx" required>
+            
+                <div class="upload-actions">
+                    <button class="btn btn-primary" type="submit">
+                        Загрузить и проанализировать
+                    </button>
+            
+                    <a class="btn btn-secondary" href="/reports">
+                        История отчетов
+                    </a>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+</body>
+</html>

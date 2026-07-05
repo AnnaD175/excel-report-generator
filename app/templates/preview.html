@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Предпросмотр отчета</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="page">
+    <header class="header">
+        <h1>Предпросмотр аналитического отчета</h1>
+        <p>Проверьте данные, графики и скачайте готовый PDF-отчет</p>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <h2 class="section-title">Загруженный файл</h2>
+
+            <span class="file-name">{{ filename }}</span>
+
+            <div class="actions">
+                <form action="/generate-report" method="post">
+                    <input type="hidden" name="filename" value="{{ filename }}">
+                    <button class="btn btn-success" type="submit">Скачать PDF-отчет</button>
+                </form>
+            
+                <a class="btn btn-secondary" href="/reports">История отчетов</a>
+                <a class="btn btn-secondary" href="/">Загрузить другой файл</a>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="section-title">Общая информация</h2>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Количество строк</div>
+                    <div class="info-value">{{ analysis.rows_count }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Количество столбцов</div>
+                    <div class="info-value">{{ analysis.columns_count }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Числовые столбцы</div>
+                    <div class="info-value">{{ analysis.numeric_columns|length }}</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="section-title">Автоматические выводы</h2>
+        
+            {% if insights %}
+            <ul class="insights-list">
+                {% for insight in insights %}
+                <li>{{ insight }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="empty-text">Выводы не были сформированы.</p>
+            {% endif %}
+        </section>
+
+        <section class="card">
+            <h2 class="section-title">Числовые показатели</h2>
+
+            {% if analysis.summary %}
+                <div class="table-wrapper">
+                    <table>
+                        <tr>
+                            <th>Столбец</th>
+                            <th>Сумма</th>
+                            <th>Среднее</th>
+                            <th>Минимум</th>
+                            <th>Максимум</th>
+                        </tr>
+
+                        {% for column, values in analysis.summary.items() %}
+                            <tr>
+                                <td>{{ column }}</td>
+                                <td>{{ values.sum }}</td>
+                                <td>{{ values.average }}</td>
+                                <td>{{ values.min }}</td>
+                                <td>{{ values.max }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            {% else %}
+                <p class="empty-text">В файле не найдено числовых столбцов.</p>
+            {% endif %}
+        </section>
+
+        <section class="card">
+            <h2 class="section-title">Графики</h2>
+        
+            {% if charts %}
+            <div class="charts-grid">
+                {% for chart in charts %}
+                <div class="chart-card">
+                    <h3>{{ chart.title }}</h3>
+                    <img class="chart-img" src="{{ chart.url }}" alt="{{ chart.title }}">
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="empty-text">Для построения графиков недостаточно данных.</p>
+            {% endif %}
+        </section>
+
+        <section class="card">
+            <h2 class="section-title">Первые 10 строк таблицы</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <tr>
+                        {% for column in columns %}
+                            <th>{{ column }}</th>
+                        {% endfor %}
+                    </tr>
+
+                    {% for row in rows %}
+                        <tr>
+                            {% for column in columns %}
+                                <td>{{ row[column] }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="footer-link">
+                <a class="btn btn-secondary" href="/">Вернуться на главную</a>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>История отчетов</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="page">
+    <header class="header">
+        <h1>История сформированных отчетов</h1>
+        <p>Список PDF-отчетов, созданных на основе загруженных Excel-файлов</p>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <div class="actions">
+                <a class="btn btn-secondary" href="/">На главную</a>
+            </div>
+
+            {% if message %}
+                <div class="success-message">
+                    <strong>Готово:</strong> {{ message }}
+                </div>
+            {% endif %}
+
+            {% if error %}
+                <div class="error">
+                    <strong>Ошибка:</strong> {{ error }}
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="card">
+            <h2 class="section-title">Сформированные PDF-отчеты</h2>
+
+            {% if reports %}
+                <div class="table-wrapper">
+                    <table>
+                        <tr>
+                            <th>Название файла</th>
+                            <th>Дата создания</th>
+                            <th>Размер</th>
+                            <th>Действия</th>
+                        </tr>
+
+                        {% for report in reports %}
+                            <tr>
+                                <td>{{ report.filename }}</td>
+                                <td>{{ report.created_at }}</td>
+                                <td>{{ report.size_kb }} КБ</td>
+                                <td>
+                                    <div class="history-actions">
+                                        <a class="history-icon-btn history-icon-download" href="{{ report.download_url }}" title="Скачать отчет"
+                                            aria-label="Скачать отчет">
+                                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M12 3v12"></path>
+                                                <path d="M7 10l5 5 5-5"></path>
+                                                <path d="M5 21h14"></path>
+                                            </svg>
+                                        </a>
+                                    
+                                        <form action="/reports/delete/{{ report.filename }}" method="post" class="history-delete-form">
+                                            <button class="history-icon-btn history-icon-delete" type="submit" title="Удалить отчет"
+                                                aria-label="Удалить отчет" onclick="return confirm('Удалить этот отчет?');">
+                                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M4 7h16"></path>
+                                                    <path d="M10 11v6"></path>
+                                                    <path d="M14 11v6"></path>
+                                                    <path d="M6 7l1 14h10l1-14"></path>
+                                                    <path d="M9 7V4h6v3"></path>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            {% else %}
+                <p class="empty-text">
+                    Пока не сформировано ни одного PDF-отчета.
+                </p>
+            {% endif %}
+        </section>
+    </main>
+</div>
+</body>
+</html>

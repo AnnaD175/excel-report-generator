@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+
+uploads/
+reports/
+app/static/charts/
+
+.env
+.idea/
+.vscode/
+
+.DS_Store
