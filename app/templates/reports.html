@@ -13,26 +13,21 @@
     </header>
 
     <main class="container">
-        <section class="card">
-            <div class="actions">
-                <a class="btn btn-secondary" href="/">На главную</a>
-            </div>
-
-            {% if message %}
-                <div class="success-message">
-                    <strong>Готово:</strong> {{ message }}
-                </div>
-            {% endif %}
-
-            {% if error %}
-                <div class="error">
-                    <strong>Ошибка:</strong> {{ error }}
-                </div>
-            {% endif %}
-        </section>
 
         <section class="card">
             <h2 class="section-title">Сформированные PDF-отчеты</h2>
+
+            {% if message %}
+            <div class="success-message">
+                <strong>Готово:</strong> {{ message }}
+            </div>
+            {% endif %}
+            
+            {% if error %}
+            <div class="error">
+                <strong>Ошибка:</strong> {{ error }}
+            </div>
+            {% endif %}
 
             {% if reports %}
                 <div class="table-wrapper">
@@ -85,7 +80,13 @@
                     Пока не сформировано ни одного PDF-отчета.
                 </p>
             {% endif %}
+
+            <div class="reports-page-actions">
+                <a class="btn btn-secondary" href="/">На главную</a>
+            </div>
+            
         </section>
+
     </main>
 </div>
 </body>

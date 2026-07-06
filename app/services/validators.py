@@ -12,9 +12,9 @@ class ExcelValidationError(Exception):
     pass
 
 
-def validate_uploaded_file(file: UploadFile) -> None:
-    if not file.filename:
-        raise ExcelValidationError("Файл не был выбран.")
+def validate_uploaded_file(file: UploadFile | None) -> None:
+    if file is None or not file.filename:
+        raise ExcelValidationError("Выберите Excel-файл для загрузки.")
 
     file_extension = Path(file.filename).suffix.lower()
 

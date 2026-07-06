@@ -8,6 +8,9 @@ from app.services.insights import generate_insights
 import shutil
 import os
 
+import re
+from markupsafe import Markup, escape
+
 from pathlib import Path
 from datetime import datetime
 
@@ -23,11 +26,27 @@ from app.services.validators import (
     validate_dataframe,
 )
 
+import traceback
+
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 templates = Jinja2Templates(directory="app/templates")
+
+def bold_numbers(text: str) -> Markup:
+    escaped_text = escape(str(text))
+
+    result = re.sub(
+        r"(?<!\w)(\d[\d\s.,]*\d|\d)(?!\w)",
+        r"<strong>\1</strong>",
+        str(escaped_text),
+    )
+
+    return Markup(result)
+
+
+templates.env.filters["bold_numbers"] = bold_numbers
 
 UPLOAD_DIR = "uploads"
 
@@ -44,7 +63,7 @@ def index(request: Request):
 
 
 @app.post("/upload", response_class=HTMLResponse)
-async def upload_file(request: Request, file: UploadFile = File(...)):
+async def upload_file(request: Request, file: UploadFile | None = File(None)):
     try:
         validate_uploaded_file(file)
 
@@ -132,8 +151,13 @@ async def generate_report(request: Request, filename: str = Form(...)):
     except ExcelValidationError as error:
         return {"error": str(error)}
 
-    except Exception:
-        return {"error": "Не удалось сформировать PDF-отчет."}
+    except Exception as error:
+        print(traceback.format_exc())
+
+        return {
+            "error": "Не удалось сформировать PDF-отчет.",
+            "details": str(error),
+        }
 
 @app.get("/reports", response_class=HTMLResponse)
 def reports_page(request: Request):

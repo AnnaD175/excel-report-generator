@@ -56,7 +56,7 @@
             {% if insights %}
             <ul class="insights-list">
                 {% for insight in insights %}
-                <li>{{ insight }}</li>
+                <li>{{ insight | bold_numbers }}</li>
                 {% endfor %}
             </ul>
             {% else %}
